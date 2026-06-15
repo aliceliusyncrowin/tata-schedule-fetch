@@ -6,3 +6,5 @@ azure-functions
 cryptography==46.0.4
 ipykernel>=6.29.5
 requests
+azure-storage-blob
+azure-identity

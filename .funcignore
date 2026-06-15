@@ -8,3 +8,4 @@ test
 .venv
 data/*
 public_key.pem
+schedule-fetch-test.ipynb
