@@ -1,8 +1,9 @@
 import logging
 import azure.functions as func
 import call_tata_schedule
-import tata_schedule_blob
+import db
 import datetime
+import pandas as pd
 
 app = func.FunctionApp()
 
@@ -24,13 +25,19 @@ def get_tata_schedule(myTimer: func.TimerRequest) -> None:
         token = call_tata_schedule.get_token(encrypted_password)
         logging.info("Token obtained, now fetching utility data...")
         # TODO: Add date changes
-        date = datetime.date.today().strftime("%Y-%m-%d")
-        now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        data = call_tata_schedule.get_utility_data(token, plant_name="Pavagada", date=date, schd_rev_no=-1)
-        # logging.info(f"Utility data obtained for date:{date}\n{data}")
+        date_ist = pd.Timestamp.now(tz="Asia/Kolkata").date() # current date in IST
+        now_utc = pd.Timestamp.now(tz="UTC")  # current time in UTC
+        data = call_tata_schedule.get_utility_data(token, plant_name="Pavagada", date=date_ist.isoformat(), schd_rev_no=-1)
+        # logging.info(f"Utility data obtained for date:{date_ist}\n{data}")
 
         logging.info('Python timer trigger function executed.')
-        tata_schedule_blob.save_schedule_to_blob(data, date, now)
+        
+        # Save to database
+        logging.info("Saving schedule data to database...")
+        conn = db.get_connection()
+        db.create_live_estimate_table(conn)
+        db.upsert_schedule_json(conn, data, date_ist, now_utc)
+        logging.info("Schedule data saved to database successfully.")
 
     except Exception as e:
-        logging.error(f"Error in get_tata_scheduler: {e}")
+        logging.error(f"Error in get_tata_schedule: {e}")
