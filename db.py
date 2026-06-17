@@ -31,9 +31,11 @@ def create_live_estimate_table(conn):
 
 
 PKEY_COLS = (
-   "schedule_date_ist", "time_retrieved_utc"
+   "schedule_date_ist", "time_retrieved"
 )
-
+ALL_COLS = {
+    "schedule_date_ist", "time_retrieved", "schedule_data"
+}
 
 def upsert_schedule_json(
     conn,
@@ -44,7 +46,7 @@ def upsert_schedule_json(
     schedule_date_ist = date_ist if hasattr(date_ist, "year") else None
     update_set = "schedule_data = EXCLUDED.schedule_data"
     sql = f"""
-        INSERT INTO tata_schedule (schedule_date_ist, time_retrieved_utc, schedule_data)
+        INSERT INTO tata_schedule (schedule_date_ist, time_retrieved, schedule_data)
         VALUES %s
         ON CONFLICT ({", ".join(PKEY_COLS)}) DO UPDATE SET {update_set}
     """

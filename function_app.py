@@ -28,9 +28,6 @@ def get_tata_schedule(myTimer: func.TimerRequest) -> None:
         date_ist = pd.Timestamp.now(tz="Asia/Kolkata").date() # current date in IST
         now_utc = pd.Timestamp.now(tz="UTC")  # current time in UTC
         data = call_tata_schedule.get_utility_data(token, plant_name="Pavagada", date=date_ist.isoformat(), schd_rev_no=-1)
-        # logging.info(f"Utility data obtained for date:{date_ist}\n{data}")
-
-        logging.info('Python timer trigger function executed.')
         
         # Save to database
         logging.info("Saving schedule data to database...")
