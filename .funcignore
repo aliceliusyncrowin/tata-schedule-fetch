@@ -9,3 +9,7 @@ test
 data/*
 public_key.pem
 schedule-fetch-test.ipynb
+explore_json.ipynb
+tataweather.ipynb
+experiment/*
+helpers/*

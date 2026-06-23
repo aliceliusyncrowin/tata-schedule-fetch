@@ -137,4 +137,7 @@ __azurite_db*__.json
 data/
 public_key.pem
 schedule-fetch-test.ipynb
+explore_json.ipynb
 
+local.settings.json
+tataweather.ipynb
