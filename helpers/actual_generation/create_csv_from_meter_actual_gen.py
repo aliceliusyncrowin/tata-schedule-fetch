@@ -12,8 +12,6 @@ def create_csv_from_meter_actual_gen(actual_gen_file_path, end_date: datetime.da
 
     actual_gen_file = pd.read_csv(actual_gen_file_path)
 
-    date_created = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-
     # Period end, time block, date, actual_meter_generation
     period_end_row = actual_gen_file.iloc[0][:97]
 
@@ -39,13 +37,23 @@ def create_csv_from_meter_actual_gen(actual_gen_file_path, end_date: datetime.da
                 'actual_meter_generation': gen_value
             })
 
-        # Save to CSV
+
+    return pd.DataFrame(records)
+ 
+
+
+def save_actual_gen_to_csv(data: pd.DataFrame, date: datetime.datetime):
+    """
+    Saves the actual generation data to a CSV file.
+    """
     csv_filename = f"data/meter_actual_gen_{date.strftime('%Y-%m-%d')}.csv"
-    result_df = pd.DataFrame(records)
-    result_df.to_csv(csv_filename, index=False)
+    data.to_csv(csv_filename, index=False)
     print(f"CSV saved: {csv_filename}")
+
 
 if __name__ == "__main__":
     import sys
     end_date = datetime.datetime(2026, 6, 14)
-    create_csv_from_meter_actual_gen("data/Pavagada_ActualGenData_FY27(Total).csv", end_date)
+    today = datetime.datetime.now()
+    result_df = create_csv_from_meter_actual_gen("data/Pavagada_ActualGenData_FY27(Total).csv", end_date)
+    save_actual_gen_to_csv(result_df, today)
