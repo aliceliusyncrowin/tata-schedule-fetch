@@ -10,3 +10,4 @@ azure-storage-blob
 azure-identity
 psycopg2-binary==2.9.12
 pandas==2.3.3
+openpyxl==3.1.3

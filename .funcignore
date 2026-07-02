@@ -13,3 +13,5 @@ explore_json.ipynb
 tataweather.ipynb
 experiment/*
 helpers/*
+tata_schedule_blob.py
+__pycache__/

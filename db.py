@@ -22,7 +22,7 @@ def get_connection():
 
 def create_live_estimate_table(conn):
     schema_path = os.path.join(
-        os.path.dirname(__file__), "schema.sql"
+        os.path.dirname(__file__), "tata_schedule_json_schema.sql"
     )
     with open(schema_path) as f:
         with conn.cursor() as cur:
@@ -54,3 +54,19 @@ def upsert_schedule_json(
         execute_values(cur, sql, [(schedule_date_ist, now_utc, Json(json))] )
     conn.commit()
 
+def get_latest_schedule_jsonb_by_date(conn, date_ist: datetime.date):
+    """
+    Fetches the latest schedule JSONB data for a specific date from the database.
+    Returns None if no data is found for the given date.
+    """
+    sql = """
+        SELECT schedule_data
+        FROM tata_schedule
+        WHERE schedule_date_ist = %s
+        ORDER BY time_retrieved DESC
+        LIMIT 1
+    """
+    with conn.cursor() as cur:
+        cur.execute(sql, (date_ist,))
+        result = cur.fetchone()
+    return result[0] if result else None
